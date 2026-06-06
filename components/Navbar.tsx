@@ -11,8 +11,8 @@ export default function Navbar() {
           <Image
             src="/logo.png"
             alt="PingWatch"
-            width={180}
-            height={55}
+            width={380}
+            height={185}
             priority
           />
         </Link>
