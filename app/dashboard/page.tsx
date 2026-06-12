@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -8,6 +9,10 @@ export default function Dashboard() {
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
   const [monitors, setMonitors] = useState<any[]>([]);
+  const [userEmail, setUserEmail] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  const pathname = usePathname();
 
   async function checkUser() {
     const {
@@ -16,7 +21,11 @@ export default function Dashboard() {
 
     if (!user) {
       window.location.href = "/login";
+      return;
     }
+
+    setUserEmail(user.email || "");
+    setLoading(false);
   }
 
   async function loadMonitors() {
@@ -103,6 +112,16 @@ export default function Dashboard() {
     (m) => m.status === "DOWN"
   ).length;
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-xl font-semibold">
+          Loading Dashboard...
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-black text-white flex">
       {/* Sidebar */}
@@ -119,61 +138,48 @@ export default function Dashboard() {
         </button>
 
         <div className="space-y-2">
-          <Link
-            href="/dashboard"
-            className="block bg-zinc-900 border-l-4 border-red-500 px-4 py-3 rounded-r-xl"
-          >
-            Monitoring
-          </Link>
-
-          <Link
-            href="/incidents"
-            className="block px-4 py-3 rounded-xl text-zinc-400 hover:bg-zinc-900 hover:text-white transition"
-          >
-            Incidents
-          </Link>
-
-          <Link
-            href="/status-pages"
-            className="block px-4 py-3 rounded-xl text-zinc-400 hover:bg-zinc-900 hover:text-white transition"
-          >
-            Status Pages
-          </Link>
-
-          <Link
-            href="/maintenance"
-            className="block px-4 py-3 rounded-xl text-zinc-400 hover:bg-zinc-900 hover:text-white transition"
-          >
-            Maintenance
-          </Link>
-
-          <Link
-            href="/team-members"
-            className="block px-4 py-3 rounded-xl text-zinc-400 hover:bg-zinc-900 hover:text-white transition"
-          >
-            Team Members
-          </Link>
-
-          <Link
-            href="/settings"
-            className="block px-4 py-3 rounded-xl text-zinc-400 hover:bg-zinc-900 hover:text-white transition"
-          >
-            Settings
-          </Link>
+          {[
+            { href: "/dashboard", label: "Monitoring" },
+            { href: "/incidents", label: "Incidents" },
+            { href: "/status-pages", label: "Status Pages" },
+            { href: "/maintenance", label: "Maintenance" },
+            { href: "/team-members", label: "Team Members" },
+            { href: "/settings", label: "Settings" },
+          ].map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`block px-4 py-3 rounded-xl transition ${
+                pathname === item.href
+                  ? "bg-zinc-900 border-l-4 border-red-500 text-white"
+                  : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
         </div>
 
         <div className="mt-auto">
-          <div className="bg-zinc-900 rounded-xl p-4 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center font-bold">
-              F
+          <div className="bg-zinc-900 rounded-xl p-4 flex items-center gap-3 border border-zinc-800">
+            <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center font-bold text-white">
+              {userEmail
+                ? userEmail.charAt(0).toUpperCase()
+                : "U"}
             </div>
 
             <div>
-              <p className="font-semibold">
-                Fazel Shah
+              <p className="font-semibold text-white">
+                {userEmail
+                  ? userEmail
+                      .split("@")[0]
+                      .replace(".", " ")
+                      .replace("_", " ")
+                  : "User"}
               </p>
+
               <p className="text-xs text-zinc-500">
-                Administrator
+                {userEmail || "Not Logged In"}
               </p>
             </div>
           </div>
@@ -183,13 +189,16 @@ export default function Dashboard() {
       {/* Main */}
       <div className="flex-1 p-10">
         <div className="mb-8">
-          <h2 className="text-6xl font-bold">
+          <h2 className="text-5xl font-bold tracking-tight">
             Monitors
             <span className="text-red-500">.</span>
           </h2>
+
+          <p className="text-zinc-500 mt-2">
+            Monitor websites, APIs and SSL certificates.
+          </p>
         </div>
 
-        {/* Add Monitor */}
         <div className="flex gap-4 mb-8">
           <input
             className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 flex-1"
@@ -213,11 +222,10 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* Monitor Cards */}
         <div className="space-y-4">
           {monitors.map((monitor) => (
             <div
-              key={monitor.id}
+              key={monitor.id || monitor.url}
               className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex justify-between items-center hover:border-red-900 transition"
             >
               <div>
@@ -230,7 +238,7 @@ export default function Dashboard() {
                 </p>
               </div>
 
-              <div className="flex items-center gap-8">
+              <div className="flex items-center gap-10 text-sm">
                 <span
                   className={`font-semibold ${
                     monitor.status === "UP"
@@ -243,13 +251,12 @@ export default function Dashboard() {
                     : "🔴 DOWN"}
                 </span>
 
-                <span>
-                  {monitor.response_time || "-"} ms
+                <span className="text-zinc-300">
+                  ⚡ {monitor.response_time ?? "-"} ms
                 </span>
 
-                <span>
-                  SSL{" "}
-                  {monitor.ssl_days_remaining || "-"}d
+                <span className="text-zinc-300">
+                  🔒 {monitor.ssl_days_remaining ?? "-"} days
                 </span>
               </div>
             </div>
@@ -269,27 +276,21 @@ export default function Dashboard() {
               <p className="text-red-500 text-3xl font-bold">
                 {downCount}
               </p>
-              <p className="text-zinc-400">
-                Down
-              </p>
+              <p className="text-zinc-400">Down</p>
             </div>
 
             <div>
               <p className="text-green-400 text-3xl font-bold">
                 {upCount}
               </p>
-              <p className="text-zinc-400">
-                Up
-              </p>
+              <p className="text-zinc-400">Up</p>
             </div>
 
             <div>
               <p className="text-zinc-500 text-3xl font-bold">
                 0
               </p>
-              <p className="text-zinc-400">
-                Paused
-              </p>
+              <p className="text-zinc-400">Paused</p>
             </div>
           </div>
         </div>
