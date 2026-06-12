@@ -11,6 +11,7 @@ export default function Dashboard() {
   const [monitors, setMonitors] = useState<any[]>([]);
   const [userEmail, setUserEmail] = useState("");
   const [loading, setLoading] = useState(true);
+  const [adding, setAdding] = useState(false);
 
   const pathname = usePathname();
 
@@ -69,6 +70,15 @@ export default function Dashboard() {
       finalUrl = `https://${finalUrl}`;
     }
 
+    try {
+      new URL(finalUrl);
+    } catch {
+      alert("Please enter a valid URL");
+      return;
+    }
+
+    setAdding(true);
+
     const res = await fetch("/api/monitors", {
       method: "POST",
       headers: {
@@ -84,6 +94,7 @@ export default function Dashboard() {
     const result = await res.json();
 
     if (result.error) {
+      setAdding(false);
       alert(result.error);
       return;
     }
@@ -91,7 +102,10 @@ export default function Dashboard() {
     setName("");
     setUrl("");
 
-    loadMonitors();
+    await fetch("/api/run-checks");
+    await loadMonitors();
+
+    setAdding(false);
   }
 
   async function logout() {
@@ -102,6 +116,12 @@ export default function Dashboard() {
   useEffect(() => {
     checkUser();
     loadMonitors();
+
+    const interval = setInterval(() => {
+      loadMonitors();
+    }, 30000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const upCount = monitors.filter(
@@ -173,13 +193,15 @@ export default function Dashboard() {
                 {userEmail
                   ? userEmail
                       .split("@")[0]
-                      .replace(".", " ")
-                      .replace("_", " ")
+                      .replace(/[._-]/g, " ")
+                      .replace(/\b\w/g, (c) =>
+                        c.toUpperCase()
+                      )
                   : "User"}
               </p>
 
               <p className="text-xs text-zinc-500">
-                {userEmail || "Not Logged In"}
+                {userEmail}
               </p>
             </div>
           </div>
@@ -199,6 +221,7 @@ export default function Dashboard() {
           </p>
         </div>
 
+        {/* Add Monitor */}
         <div className="flex gap-4 mb-8">
           <input
             className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 flex-1"
@@ -216,51 +239,74 @@ export default function Dashboard() {
 
           <button
             onClick={addMonitor}
-            className="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-xl font-medium"
+            disabled={adding}
+            className="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-xl font-medium disabled:opacity-50"
           >
-            + New
+            {adding ? "Checking..." : "+ New"}
           </button>
         </div>
 
+        {/* Monitor Cards */}
         <div className="space-y-4">
-          {monitors.map((monitor) => (
-            <div
-              key={monitor.id || monitor.url}
-              className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex justify-between items-center hover:border-red-900 transition"
-            >
-              <div>
-                <h3 className="text-xl font-semibold">
-                  {monitor.name}
-                </h3>
+          {monitors.length === 0 ? (
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-10 text-center">
+              <h3 className="text-xl font-semibold mb-2">
+                No Monitors Yet
+              </h3>
 
-                <p className="text-zinc-400 text-sm">
-                  {monitor.url}
-                </p>
-              </div>
-
-              <div className="flex items-center gap-10 text-sm">
-                <span
-                  className={`font-semibold ${
-                    monitor.status === "UP"
-                      ? "text-green-400"
-                      : "text-red-400"
-                  }`}
-                >
-                  {monitor.status === "UP"
-                    ? "🟢 UP"
-                    : "🔴 DOWN"}
-                </span>
-
-                <span className="text-zinc-300">
-                  ⚡ {monitor.response_time ?? "-"} ms
-                </span>
-
-                <span className="text-zinc-300">
-                  🔒 {monitor.ssl_days_remaining ?? "-"} days
-                </span>
-              </div>
+              <p className="text-zinc-500">
+                Add your first website above to start monitoring.
+              </p>
             </div>
-          ))}
+          ) : (
+            monitors.map((monitor) => (
+              <div
+                key={monitor.id}
+                className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex justify-between items-center hover:border-red-900 transition"
+              >
+                <div>
+                  <h3 className="text-xl font-semibold">
+                    {monitor.name}
+                  </h3>
+
+                  <p className="text-zinc-400 text-sm">
+                    {monitor.url}
+                  </p>
+
+                  <p className="text-zinc-500 text-xs mt-1">
+                    Last Check:{" "}
+                    {monitor.last_checked
+                      ? new Date(
+                          monitor.last_checked
+                        ).toLocaleString()
+                      : "Never"}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-10 text-sm">
+                  <span
+                    className={`font-semibold ${
+                      monitor.status === "UP"
+                        ? "text-green-400"
+                        : "text-red-400"
+                    }`}
+                  >
+                    {monitor.status === "UP"
+                      ? "🟢 UP"
+                      : "🔴 DOWN"}
+                  </span>
+
+                  <span className="text-zinc-300">
+                    ⚡ {monitor.response_time ?? "-"} ms
+                  </span>
+
+                  <span className="text-zinc-300">
+                    🔒 {monitor.ssl_days_remaining ?? "-"} days
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 
