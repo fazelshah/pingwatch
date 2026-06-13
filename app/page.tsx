@@ -163,75 +163,8 @@ export default function Home() {
             </div>
           </section>
 
-          {/* Pricing */}
-          <section className="max-w-6xl mx-auto px-6 py-24">
-            <h2 className="text-5xl font-bold text-center mb-6">
-              Simple Pricing
-            </h2>
+          
 
-            <p className="text-center text-slate-400 mb-16">
-              Start free and upgrade when you need more
-              monitors.
-            </p>
-
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="bg-slate-900 border border-slate-800 rounded-3xl p-10">
-                <h3 className="text-3xl font-bold mb-4">
-                  Free
-                </h3>
-
-                <p className="text-6xl font-bold text-red-500 mb-8">
-                  ₹0
-                </p>
-
-                <ul className="space-y-4 text-slate-300">
-                  <li>✓ 5 Monitors</li>
-                  <li>✓ Email Alerts</li>
-                  <li>✓ SSL Monitoring</li>
-                  <li>✓ Public Status Pages</li>
-                </ul>
-
-                <a
-                  href="/signup"
-                  className="block text-center mt-10 bg-red-600 hover:bg-red-700 py-3 rounded-xl font-semibold"
-                >
-                  Get Started
-                </a>
-              </div>
-
-              <div className="bg-slate-900 border border-red-600 rounded-3xl p-10">
-                <div className="inline-block bg-red-600 px-3 py-1 rounded-full text-sm mb-4">
-                  Most Popular
-                </div>
-
-                <h3 className="text-3xl font-bold mb-4">
-                  Pro
-                </h3>
-
-                <p className="text-6xl font-bold text-red-500 mb-8">
-                  ₹299
-                  <span className="text-xl text-slate-400">
-                    /month
-                  </span>
-                </p>
-
-                <ul className="space-y-4 text-slate-300">
-                  <li>✓ 50 Monitors</li>
-                  <li>✓ Instant Alerts</li>
-                  <li>✓ SSL Monitoring</li>
-                  <li>✓ Public Status Pages</li>
-                  <li>✓ Priority Support</li>
-                </ul>
-
-                <a
-                  href="/signup"
-                  className="block text-center mt-10 bg-red-600 hover:bg-red-700 py-3 rounded-xl font-semibold"
-                >
-                  Upgrade
-                </a>
-              </div>
-            </div>
-          </section>
 
           {/* CTA */}
           <section className="py-28 mt-20 bg-slate-900 border-t border-slate-800">
