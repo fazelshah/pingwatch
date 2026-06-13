@@ -34,7 +34,6 @@ export async function sendRecoveryAlert(
     `,
   });
 }
-
 export async function sendSSLAlert(
   email: string,
   url: string,
