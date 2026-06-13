@@ -5,7 +5,7 @@ import sslChecker from "ssl-checker";
 import {
   sendDownAlert,
   sendRecoveryAlert,
-  sendSSLAlert,
+  sendSSLExpiryAlert,
 } from "@/lib/email";
 
 export async function GET() {
@@ -45,6 +45,7 @@ export async function GET() {
         : "DOWN";
 
       // DOWN ALERT
+
       if (
         newStatus === "DOWN" &&
         !monitor.alert_sent &&
@@ -64,6 +65,7 @@ export async function GET() {
       }
 
       // RECOVERY ALERT
+
       if (
         newStatus === "UP" &&
         monitor.alert_sent &&
@@ -82,13 +84,15 @@ export async function GET() {
           .eq("id", monitor.id);
       }
 
-      // SSL EXPIRY ALERT
+      // SSL ALERT - 30 DAYS
+
       if (
         ssl.daysRemaining <= 30 &&
-        !monitor.ssl_alert_sent &&
+        ssl.daysRemaining > 14 &&
+        !monitor.ssl_alert_30_sent &&
         monitor.alert_email
       ) {
-        await sendSSLAlert(
+        await sendSSLExpiryAlert(
           monitor.alert_email,
           monitor.url,
           ssl.daysRemaining
@@ -97,7 +101,50 @@ export async function GET() {
         await supabase
           .from("monitors")
           .update({
-            ssl_alert_sent: true,
+            ssl_alert_30_sent: true,
+          })
+          .eq("id", monitor.id);
+      }
+
+      // SSL ALERT - 14 DAYS
+
+      if (
+        ssl.daysRemaining <= 14 &&
+        ssl.daysRemaining > 7 &&
+        !monitor.ssl_alert_14_sent &&
+        monitor.alert_email
+      ) {
+        await sendSSLExpiryAlert(
+          monitor.alert_email,
+          monitor.url,
+          ssl.daysRemaining
+        );
+
+        await supabase
+          .from("monitors")
+          .update({
+            ssl_alert_14_sent: true,
+          })
+          .eq("id", monitor.id);
+      }
+
+      // SSL ALERT - 7 DAYS
+
+      if (
+        ssl.daysRemaining <= 7 &&
+        !monitor.ssl_alert_7_sent &&
+        monitor.alert_email
+      ) {
+        await sendSSLExpiryAlert(
+          monitor.alert_email,
+          monitor.url,
+          ssl.daysRemaining
+        );
+
+        await supabase
+          .from("monitors")
+          .update({
+            ssl_alert_7_sent: true,
           })
           .eq("id", monitor.id);
       }
@@ -122,6 +169,7 @@ export async function GET() {
       );
 
       // DOWN ALERT ON EXCEPTION
+
       if (
         !monitor.alert_sent &&
         monitor.alert_email
@@ -138,6 +186,7 @@ export async function GET() {
               alert_sent: true,
             })
             .eq("id", monitor.id);
+
         } catch (emailError) {
           console.error(
             "Email send failed:",

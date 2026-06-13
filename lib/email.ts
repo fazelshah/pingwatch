@@ -13,9 +13,15 @@ export async function sendDownAlert(
     to: email,
     subject: `🚨 Website Down: ${url}`,
     html: `
-      <h2>Website Down Alert</h2>
-      <p><strong>${url}</strong> is currently unreachable.</p>
-      <p>Please investigate immediately.</p>
+      <h2>🚨 Website Down Alert</h2>
+
+      <p>
+        <strong>${url}</strong> is currently unreachable.
+      </p>
+
+      <p>
+        Please investigate immediately.
+      </p>
     `,
   });
 }
@@ -29,11 +35,15 @@ export async function sendRecoveryAlert(
     to: email,
     subject: `✅ Website Recovered: ${url}`,
     html: `
-      <h2>Website Recovered</h2>
-      <p><strong>${url}</strong> is back online.</p>
+      <h2>✅ Website Recovered</h2>
+
+      <p>
+        <strong>${url}</strong> is back online.
+      </p>
     `,
   });
 }
+
 export async function sendSSLAlert(
   email: string,
   url: string,
@@ -44,12 +54,39 @@ export async function sendSSLAlert(
     to: email,
     subject: `🔒 SSL Certificate Expiring Soon`,
     html: `
-      <h2>SSL Expiry Warning</h2>
+      <h2>🔒 SSL Expiry Warning</h2>
+
       <p>
         SSL certificate for
         <strong>${url}</strong>
         expires in
         <strong>${daysRemaining} days</strong>.
+      </p>
+    `,
+  });
+}
+
+export async function sendSSLExpiryAlert(
+  email: string,
+  url: string,
+  daysRemaining: number
+) {
+  await resend.emails.send({
+    from: "PingWatch <alerts@fazelshah.fun>",
+    to: email,
+    subject: `🔒 SSL Expiry Warning (${daysRemaining} days left)`,
+    html: `
+      <h2>🔒 SSL Certificate Expiry Warning</h2>
+
+      <p>
+        The SSL certificate for
+        <strong>${url}</strong>
+        will expire in
+        <strong>${daysRemaining} days</strong>.
+      </p>
+
+      <p>
+        Please renew it before it expires.
       </p>
     `,
   });

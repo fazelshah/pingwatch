@@ -116,7 +116,76 @@ if (!emailRegex.test(alertEmail)) {
 
     setAdding(false);
   }
+async function deleteMonitor(id: string) {
+  const confirmed = window.confirm(
+    "Are you sure you want to delete this monitor?"
+  );
 
+  if (!confirmed) return;
+
+  const res = await fetch(
+    `/api/monitors/${id}`,
+    {
+      method: "DELETE",
+    }
+  );
+
+  const result = await res.json();
+
+  if (result.error) {
+    alert(result.error);
+    return;
+  }
+
+  await loadMonitors();
+}
+async function editMonitor(monitor: any) {
+  const newName = prompt(
+    "Monitor Name",
+    monitor.name
+  );
+
+  if (!newName) return;
+
+  const newUrl = prompt(
+    "Monitor URL",
+    monitor.url
+  );
+
+  if (!newUrl) return;
+
+  const newAlertEmail = prompt(
+    "Alert Email",
+    monitor.alert_email || ""
+  );
+
+  if (!newAlertEmail) return;
+
+  const res = await fetch(
+    `/api/monitors/${monitor.id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+      body: JSON.stringify({
+        name: newName,
+        url: newUrl,
+        alert_email: newAlertEmail,
+      }),
+    }
+  );
+
+  const result = await res.json();
+
+  if (result.error) {
+    alert(result.error);
+    return;
+  }
+
+  await loadMonitors();
+}
   async function logout() {
     await supabase.auth.signOut();
     window.location.href = "/login";
@@ -169,11 +238,8 @@ if (!emailRegex.test(alertEmail)) {
         <div className="space-y-2">
           {[
             { href: "/dashboard", label: "Monitoring" },
-            { href: "/incidents", label: "Incidents" },
+        
             { href: "/status-pages", label: "Status Pages" },
-            { href: "/maintenance", label: "Maintenance" },
-            { href: "/team-members", label: "Team Members" },
-            { href: "/settings", label: "Settings" },
           ].map((item) => (
             <Link
               key={item.href}
@@ -324,6 +390,22 @@ if (!emailRegex.test(alertEmail)) {
                   <span className="text-zinc-300">
                     🔒 {monitor.ssl_days_remaining ?? "-"} days
                   </span>
+<button
+  onClick={() =>
+    editMonitor(monitor)
+  }
+  className="bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-lg text-white"
+>
+  Edit
+</button>
+<button
+  onClick={() =>
+    deleteMonitor(monitor.id)
+  }
+  className="bg-red-600 hover:bg-red-700 px-3 py-2 rounded-lg text-white"
+>
+  Delete
+</button>
                 </div>
               </div>
             ))
