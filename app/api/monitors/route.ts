@@ -19,7 +19,12 @@ export async function GET() {
 export async function POST(req: Request) {
   const body = await req.json();
 
-  const { name, url, email } = body;
+  const {
+    name,
+    url,
+    email,
+    alert_email,
+  } = body;
 
   const { data, error } = await supabase
     .from("monitors")
@@ -28,6 +33,7 @@ export async function POST(req: Request) {
         name,
         url,
         email,
+        alert_email,
         status: "UP",
         interval_minutes: 1,
       },

@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase";
 export default function Dashboard() {
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
+  const [alertEmail, setAlertEmail] = useState("");
   const [monitors, setMonitors] = useState<any[]>([]);
   const [userEmail, setUserEmail] = useState("");
   const [loading, setLoading] = useState(true);
@@ -47,7 +48,7 @@ export default function Dashboard() {
   }
 
   async function addMonitor() {
-    if (!name || !url) {
+    if (!name || !url || !alertEmail) {
       alert("Please fill all fields");
       return;
     }
@@ -76,7 +77,13 @@ export default function Dashboard() {
       alert("Please enter a valid URL");
       return;
     }
+const emailRegex =
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+if (!emailRegex.test(alertEmail)) {
+  alert("Please enter a valid alert email");
+  return;
+}
     setAdding(true);
 
     const res = await fetch("/api/monitors", {
@@ -88,6 +95,7 @@ export default function Dashboard() {
         name,
         url: finalUrl,
         email: user.email,
+       alert_email: alertEmail,
       }),
     });
 
@@ -101,6 +109,7 @@ export default function Dashboard() {
 
     setName("");
     setUrl("");
+   setAlertEmail("");
 
     await fetch("/api/run-checks");
     await loadMonitors();
@@ -181,7 +190,7 @@ export default function Dashboard() {
         </div>
 
         <div className="mt-auto">
-          <div className="bg-zinc-900 rounded-xl p-4 flex items-center gap-3 border border-zinc-800">
+	          <div className="bg-zinc-900 rounded-xl p-4 flex items-center gap-3 border border-zinc-800">
             <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center font-bold text-white">
               {userEmail
                 ? userEmail.charAt(0).toUpperCase()
@@ -222,7 +231,7 @@ export default function Dashboard() {
         </div>
 
         {/* Add Monitor */}
-        <div className="flex gap-4 mb-8">
+        <div className="grid md:grid-cols-4 gap-4 mb-8">
           <input
             className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 flex-1"
             placeholder="Website Name"
@@ -236,7 +245,17 @@ export default function Dashboard() {
             value={url}
             onChange={(e) => setUrl(e.target.value)}
           />
+          <input
 
+    className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3"
+
+    placeholder="alerts@example.com"
+
+    value={alertEmail}
+
+    onChange={(e) => setAlertEmail(e.target.value)}
+
+  />
           <button
             onClick={addMonitor}
             disabled={adding}
@@ -272,7 +291,9 @@ export default function Dashboard() {
                   <p className="text-zinc-400 text-sm">
                     {monitor.url}
                   </p>
-
+                 <p className="text-zinc-500 text-xs mt-1">
+  Alert Email: {monitor.alert_email || "Not Configured"}
+</p>
                   <p className="text-zinc-500 text-xs mt-1">
                     Last Check:{" "}
                     {monitor.last_checked
