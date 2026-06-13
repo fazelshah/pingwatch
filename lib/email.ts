@@ -9,7 +9,7 @@ export async function sendDownAlert(
   url: string
 ) {
   await resend.emails.send({
-    from: "alerts@pingwatch.fazelshah.fun",
+    from: "PingWatch <alerts@fazelshah.fun>",
     to: email,
     subject: `🚨 Website Down: ${url}`,
     html: `
@@ -25,7 +25,7 @@ export async function sendRecoveryAlert(
   url: string
 ) {
   await resend.emails.send({
-    from: "alerts@YOUR_DOMAIN.com",
+    from: "PingWatch <alerts@fazelshah.fun>",
     to: email,
     subject: `✅ Website Recovered: ${url}`,
     html: `
@@ -41,7 +41,7 @@ export async function sendSSLAlert(
   daysRemaining: number
 ) {
   await resend.emails.send({
-    from: "alerts@YOUR_DOMAIN.com",
+    from: "PingWatch <alerts@fazelshah.fun>",
     to: email,
     subject: `🔒 SSL Certificate Expiring Soon`,
     html: `
