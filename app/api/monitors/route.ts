@@ -26,6 +26,28 @@ export async function POST(req: Request) {
     alert_email,
   } = body;
 
+  // Free plan limit (5 monitors)
+  const {
+    data: existingMonitors,
+    error: countError,
+  } = await supabase
+    .from("monitors")
+    .select("id")
+    .eq("email", email);
+
+  if (countError) {
+    return NextResponse.json({
+      error: countError.message,
+    });
+  }
+
+  if ((existingMonitors?.length || 0) >= 2) {
+    return NextResponse.json({
+      error:
+        "Free plan limit reached. Upgrade to Pro (₹299/month) for up to 50 monitors.",
+    });
+  }
+
   const { data, error } = await supabase
     .from("monitors")
     .insert([
