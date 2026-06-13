@@ -11,17 +11,19 @@ export default function Home() {
           {/* Hero Section */}
           <section className="max-w-7xl mx-auto px-6 py-32 text-center">
             <h1 className="text-7xl font-bold leading-tight">
-              Monitor Websites,
+              Know When Your Website
               <br />
-              APIs & SSL Certificates
+              Goes Down Before
               <br />
-              <span className="text-red-500">24/7</span>
+              <span className="text-red-500">
+                Your Customers Do
+              </span>
             </h1>
 
             <p className="mt-8 text-xl text-slate-400 max-w-3xl mx-auto">
-              Get instant alerts when your website goes down.
-              Monitor uptime, response times and SSL expiry
-              from a single dashboard.
+              Monitor websites, APIs and SSL certificates
+              from one dashboard. Get instant email alerts
+              before downtime impacts your customers.
             </p>
 
             <div className="mt-12 flex justify-center gap-4">
@@ -58,6 +60,7 @@ export default function Home() {
                 <div className="space-y-4">
                   <div className="bg-slate-950 border border-slate-800 rounded-xl p-5 flex justify-between">
                     <span>google.com</span>
+
                     <span className="text-green-400 font-semibold">
                       🟢 UP
                     </span>
@@ -65,6 +68,7 @@ export default function Home() {
 
                   <div className="bg-slate-950 border border-slate-800 rounded-xl p-5 flex justify-between">
                     <span>github.com</span>
+
                     <span className="text-green-400 font-semibold">
                       🟢 UP
                     </span>
@@ -72,6 +76,7 @@ export default function Home() {
 
                   <div className="bg-slate-950 border border-slate-800 rounded-xl p-5 flex justify-between">
                     <span>api.myapp.com</span>
+
                     <span className="text-red-400 font-semibold">
                       🔴 DOWN
                     </span>
@@ -96,11 +101,11 @@ export default function Home() {
 
               <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center">
                 <h3 className="text-5xl font-bold text-red-500">
-                  24/7
+                  1 Min
                 </h3>
 
                 <p className="mt-3 text-slate-400">
-                  Monitoring
+                  Check Frequency
                 </p>
               </div>
 
@@ -140,8 +145,8 @@ export default function Home() {
                 </h3>
 
                 <p className="text-slate-400">
-                  Track API response times and
-                  availability from one dashboard.
+                  Track API response times and availability
+                  from one dashboard.
                 </p>
               </div>
 
@@ -158,16 +163,95 @@ export default function Home() {
             </div>
           </section>
 
+          {/* Pricing */}
+          <section className="max-w-6xl mx-auto px-6 py-24">
+            <h2 className="text-5xl font-bold text-center mb-6">
+              Simple Pricing
+            </h2>
+
+            <p className="text-center text-slate-400 mb-16">
+              Start free and upgrade when you need more
+              monitors.
+            </p>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="bg-slate-900 border border-slate-800 rounded-3xl p-10">
+                <h3 className="text-3xl font-bold mb-4">
+                  Free
+                </h3>
+
+                <p className="text-6xl font-bold text-red-500 mb-8">
+                  ₹0
+                </p>
+
+                <ul className="space-y-4 text-slate-300">
+                  <li>✓ 5 Monitors</li>
+                  <li>✓ Email Alerts</li>
+                  <li>✓ SSL Monitoring</li>
+                  <li>✓ Public Status Pages</li>
+                </ul>
+
+                <a
+                  href="/signup"
+                  className="block text-center mt-10 bg-red-600 hover:bg-red-700 py-3 rounded-xl font-semibold"
+                >
+                  Get Started
+                </a>
+              </div>
+
+              <div className="bg-slate-900 border border-red-600 rounded-3xl p-10">
+                <div className="inline-block bg-red-600 px-3 py-1 rounded-full text-sm mb-4">
+                  Most Popular
+                </div>
+
+                <h3 className="text-3xl font-bold mb-4">
+                  Pro
+                </h3>
+
+                <p className="text-6xl font-bold text-red-500 mb-8">
+                  ₹299
+                  <span className="text-xl text-slate-400">
+                    /month
+                  </span>
+                </p>
+
+                <ul className="space-y-4 text-slate-300">
+                  <li>✓ 50 Monitors</li>
+                  <li>✓ Instant Alerts</li>
+                  <li>✓ SSL Monitoring</li>
+                  <li>✓ Public Status Pages</li>
+                  <li>✓ Priority Support</li>
+                </ul>
+
+                <a
+                  href="/signup"
+                  className="block text-center mt-10 bg-red-600 hover:bg-red-700 py-3 rounded-xl font-semibold"
+                >
+                  Upgrade
+                </a>
+              </div>
+            </div>
+          </section>
+
           {/* CTA */}
           <section className="py-28 mt-20 bg-slate-900 border-t border-slate-800">
             <div className="max-w-4xl mx-auto text-center px-6">
               <h2 className="text-6xl font-bold">
-                Start Monitoring Today
+                Ready to Stop Downtime Before It Costs You
+                Customers?
               </h2>
 
               <p className="mt-6 text-xl text-slate-400">
-                Free plan available. No credit card required.
+                Monitor websites, APIs and SSL certificates
+                from one dashboard with instant email
+                alerts.
               </p>
+
+              <div className="mt-8 space-y-2 text-slate-300">
+                <p>✓ Website Monitoring</p>
+                <p>✓ SSL Expiry Alerts</p>
+                <p>✓ Public Status Pages</p>
+              </div>
 
               <a
                 href="/signup"
