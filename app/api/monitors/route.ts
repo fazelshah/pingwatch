@@ -24,9 +24,10 @@ export async function POST(req: Request) {
     url,
     email,
     alert_email,
+    status_page_id,
   } = body;
 
-  // Free plan limit (5 monitors)
+  // Free plan limit
   const {
     data: existingMonitors,
     error: countError,
@@ -41,10 +42,10 @@ export async function POST(req: Request) {
     });
   }
 
-  if ((existingMonitors?.length || 0) >= 2) {
+  if ((existingMonitors?.length || 0) >= 3) {
     return NextResponse.json({
       error:
-        "Free plan limit reached. Upgrade to Pro (₹299/month) for up to 50 monitors.",
+        "Free plan limit reached. Upgrade to Pro (₹29/month) for up to 50 monitors.",
     });
   }
 
@@ -56,6 +57,7 @@ export async function POST(req: Request) {
         url,
         email,
         alert_email,
+        status_page_id,
         status: "UP",
         interval_minutes: 1,
       },

@@ -122,13 +122,13 @@ export default function StatusPagesPage() {
               /status/{page.slug}
             </p>
 
-            <a
-/status/{page.id}
-              target="_blank"
-              className="text-red-500"
-            >
-              Open Status Page →
-            </a>
+<a
+  href={`/status/${page.slug}`}
+  target="_blank"
+  className="text-red-500"
+>
+  Open Status Page →
+</a>
           </div>
         ))}
       </div>
