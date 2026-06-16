@@ -10,7 +10,12 @@ export default function Dashboard() {
   const [url, setUrl] = useState("");
   const [alertEmail, setAlertEmail] = useState("");
   const [monitors, setMonitors] = useState<any[]>([]);
-  const [userEmail, setUserEmail] = useState("");
+  const [statusPages, setStatusPages] = useState<any[]>([]);
+
+const [selectedStatusPageId, setSelectedStatusPageId] =
+
+  useState(""); 
+ const [userEmail, setUserEmail] = useState("");
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
 
@@ -52,6 +57,10 @@ export default function Dashboard() {
       alert("Please fill all fields");
       return;
     }
+    if (!selectedStatusPageId) {
+  alert("Please select a status page");
+  return;
+}
 
     const {
       data: { user },
@@ -96,6 +105,8 @@ if (!emailRegex.test(alertEmail)) {
         url: finalUrl,
         email: user.email,
        alert_email: alertEmail,
+       status_page_id:
+          selectedStatusPageId,
       }),
     });
 
@@ -139,6 +150,29 @@ async function deleteMonitor(id: string) {
 
   await loadMonitors();
 }
+async function loadStatusPages() {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return;
+
+  const res = await fetch("/api/status-pages");
+  const data = await res.json();
+
+  const myPages = (data || []).filter(
+    (page: any) =>
+      page.user_email === user.email
+  );
+
+  setStatusPages(myPages);
+
+  if (myPages.length > 0) {
+    setSelectedStatusPageId(
+      myPages[0].id
+    );
+  }
+}
 async function editMonitor(monitor: any) {
   const newName = prompt(
     "Monitor Name",
@@ -173,6 +207,7 @@ async function editMonitor(monitor: any) {
         name: newName,
         url: newUrl,
         alert_email: newAlertEmail,
+  
       }),
     }
   );
@@ -194,7 +229,7 @@ async function editMonitor(monitor: any) {
   useEffect(() => {
     checkUser();
     loadMonitors();
-
+loadStatusPages();
     const interval = setInterval(() => {
       loadMonitors();
     }, 30000);
@@ -297,39 +332,62 @@ async function editMonitor(monitor: any) {
         </div>
 
         {/* Add Monitor */}
-        <div className="grid md:grid-cols-4 gap-4 mb-8">
-          <input
-            className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 flex-1"
-            placeholder="Website Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+      {/* Add Monitor */}
+<div className="grid md:grid-cols-5 gap-4 mb-8">
 
-          <input
-            className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 flex-1"
-            placeholder="https://example.com"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-          />
-          <input
-
+  <input
     className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3"
-
-    placeholder="alerts@example.com"
-
-    value={alertEmail}
-
-    onChange={(e) => setAlertEmail(e.target.value)}
-
+    placeholder="Website Name"
+    value={name}
+    onChange={(e) => setName(e.target.value)}
   />
-          <button
-            onClick={addMonitor}
-            disabled={adding}
-            className="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-xl font-medium disabled:opacity-50"
-          >
-            {adding ? "Checking..." : "+ New"}
-          </button>
-        </div>
+
+  <input
+    className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3"
+    placeholder="https://example.com"
+    value={url}
+    onChange={(e) => setUrl(e.target.value)}
+  />
+
+  <input
+    className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3"
+    placeholder="alerts@example.com"
+    value={alertEmail}
+    onChange={(e) => setAlertEmail(e.target.value)}
+  />
+
+  <select
+    value={selectedStatusPageId}
+    onChange={(e) =>
+      setSelectedStatusPageId(
+        e.target.value
+      )
+    }
+    className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3"
+  >
+    <option value="">
+      Select Status Page
+    </option>
+
+    {statusPages.map((page: any) => (
+      <option
+        key={page.id}
+        value={page.id}
+      >
+        {page.name}
+      </option>
+    ))}
+  </select>
+
+  <button
+    onClick={addMonitor}
+    disabled={adding}
+    className="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-xl font-medium disabled:opacity-50"
+  >
+    {adding ? "Checking..." : "+ New"}
+  </button>
+
+</div>
 
         {/* Monitor Cards */}
         <div className="space-y-4">

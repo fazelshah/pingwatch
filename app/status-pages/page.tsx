@@ -123,7 +123,7 @@ export default function StatusPagesPage() {
             </p>
 
             <a
-              href={`/status/${page.slug}`}
+/status/{page.id}
               target="_blank"
               className="text-red-500"
             >

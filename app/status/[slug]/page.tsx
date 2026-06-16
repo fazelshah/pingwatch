@@ -6,11 +6,32 @@ export default async function StatusPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const { data: statusPage } = await supabase
+  .from("status_pages")
+  .select("*")
+  .eq("slug", slug)
+  .single();
+
+if (!statusPage) {
+  return (
+    <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <h1 className="text-3xl font-bold">
+        Status Page Not Found
+      </h1>
+    </div>
+  );
+}
 
   const { data: monitors } = await supabase
     .from("monitors")
     .select("*")
-    .eq("status_page_slug", slug)
+.eq(
+
+    "status_page_id",
+
+    statusPage.id
+
+  )
     .order("created_at", {
       ascending: false,
     });
@@ -27,14 +48,13 @@ export default async function StatusPage({
     <div className="min-h-screen bg-black text-white">
       <div className="max-w-5xl mx-auto p-10">
 
-        <h1 className="text-5xl font-bold mb-3">
-          Status Page
-        </h1>
+<h1 className="text-5xl font-bold mb-3">
+  {statusPage.name}
+</h1>
 
-        <p className="text-zinc-500 mb-10">
-          Public system status
-        </p>
-
+<p className="text-zinc-500 mb-10">
+  Real-time availability and uptime information.
+</p>
         <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 mb-8">
           <h2 className="text-2xl font-semibold mb-2">
             System Status
@@ -64,10 +84,9 @@ export default async function StatusPage({
                   <h3 className="text-xl font-semibold">
                     {monitor.name}
                   </h3>
-
-                  <p className="text-zinc-500 text-sm">
-                    {monitor.url}
-                  </p>
+<p className="text-zinc-500 text-sm">
+  Service Monitor
+</p>
                 </div>
 
                 <div className="text-right">
