@@ -258,14 +258,14 @@ loadStatusPages();
   return (
     <div className="min-h-screen bg-black text-white flex">
       {/* Sidebar */}
-      <div className="w-72 bg-zinc-950 border-r border-red-950 p-6 flex flex-col">
+      <div className="w-72 bg-zinc-950 border-r border-green-950 p-6 flex flex-col">
         <h1 className="text-4xl font-bold mb-8">
-          <span className="text-red-500">●</span> PingWatch
+          <span className="text-green-500">●</span> PingWatch
         </h1>
 
         <button
           onClick={logout}
-          className="mb-8 w-full border border-red-600 text-red-500 hover:bg-red-600 hover:text-white transition px-4 py-3 rounded-xl text-left font-medium"
+          className="mb-8 w-full border border-green-600 bg-green-600 hover:bg-green-600 hover:text-white transition px-4 py-3 rounded-xl text-left font-medium"
         >
           Logout
         </button>
@@ -281,7 +281,7 @@ loadStatusPages();
               href={item.href}
               className={`block px-4 py-3 rounded-xl transition ${
                 pathname === item.href
-                  ? "bg-zinc-900 border-l-4 border-red-500 text-white"
+                  ? "bg-zinc-900 border-l-4 border-green-500 text-white"
                   : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
               }`}
             >
@@ -292,7 +292,7 @@ loadStatusPages();
 
         <div className="mt-auto">
 	          <div className="bg-zinc-900 rounded-xl p-4 flex items-center gap-3 border border-zinc-800">
-            <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center font-bold text-white">
+            <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center font-bold text-white">
               {userEmail
                 ? userEmail.charAt(0).toUpperCase()
                 : "U"}
@@ -323,7 +323,7 @@ loadStatusPages();
         <div className="mb-8">
           <h2 className="text-5xl font-bold tracking-tight">
             Monitors
-            <span className="text-red-500">.</span>
+            <span className="bg-green-600">.</span>
           </h2>
 
           <p className="text-zinc-500 mt-2">
@@ -382,7 +382,7 @@ loadStatusPages();
   <button
     onClick={addMonitor}
     disabled={adding}
-    className="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-xl font-medium disabled:opacity-50"
+    className="bg-red-600 hover:bg-red-700 px-3 py-2 rounded-lg text-white px-6 py-3 rounded-xl font-medium disabled:opacity-50"
   >
     {adding ? "Checking..." : "+ New"}
   </button>
@@ -392,7 +392,13 @@ loadStatusPages();
         {/* Monitor Cards */}
         <div className="space-y-4">
           {monitors.length === 0 ? (
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-10 text-center">
+            <div className="bg-white/5
+
+border border-white/10
+
+backdrop-blur-xl
+
+rounded-3xl p-10 text-center">
               <h3 className="text-xl font-semibold mb-2">
                 No Monitors Yet
               </h3>
@@ -405,7 +411,13 @@ loadStatusPages();
             monitors.map((monitor) => (
               <div
                 key={monitor.id}
-                className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex justify-between items-center hover:border-red-900 transition"
+                className="bg-white/5
+
+border border-white/10
+
+backdrop-blur-xl
+
+rounded-3xl p-5 flex justify-between items-center hover:border-green-500/30 transition"
               >
                 <div>
                   <h3 className="text-xl font-semibold">
@@ -460,7 +472,7 @@ loadStatusPages();
   onClick={() =>
     deleteMonitor(monitor.id)
   }
-  className="bg-red-600 hover:bg-red-700 px-3 py-2 rounded-lg text-white"
+  className="bg-red-600 hover:bg-red-700 px-3 py-2 rounded-lg text-white px-3 py-2 rounded-lg text-white"
 >
   Delete
 </button>
@@ -473,14 +485,24 @@ loadStatusPages();
 
       {/* Right Panel */}
       <div className="w-80 border-l border-zinc-900 p-6">
-        <div className="bg-zinc-900 rounded-2xl p-6 mb-6">
+        <div className="bg-white/5
+
+border border-white/10
+
+backdrop-blur-xl
+
+rounded-3xl
+
+p-6
+
+mb-6">
           <h3 className="text-xl font-semibold mb-6">
             Current Status
           </h3>
 
           <div className="grid grid-cols-3 text-center">
             <div>
-              <p className="text-red-500 text-3xl font-bold">
+              <p className="text-red-400 text-3xl font-bold">
                 {downCount}
               </p>
               <p className="text-zinc-400">Down</p>
