@@ -161,6 +161,18 @@ export async function GET() {
         })
         .eq("id", monitor.id);
 
+        await supabase
+  .from("monitor_logs")
+  .insert({
+    monitor_id: monitor.id,
+    status: newStatus,
+    response_time: responseTime,
+    ssl_days_remaining:
+      ssl.daysRemaining,
+    status_code: response.status,
+    checked_at:
+      new Date().toISOString(),
+  });
     } catch (err) {
       console.error(
         "Check failed:",
@@ -203,6 +215,24 @@ export async function GET() {
             new Date().toISOString(),
         })
         .eq("id", monitor.id);
+        await supabase
+  .from("monitor_logs")
+  .insert({
+    monitor_id: monitor.id,
+    status: "DOWN",
+    response_time: null,
+    ssl_days_remaining: null,
+    status_code: null,
+    error_message:
+
+      err instanceof Error
+
+        ? err.message
+
+        : "Unknown error",
+    checked_at:
+      new Date().toISOString(),
+  });
     }
   }
 
