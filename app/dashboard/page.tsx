@@ -18,6 +18,8 @@ const [selectedStatusPageId, setSelectedStatusPageId] =
  const [userEmail, setUserEmail] = useState("");
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] =
+  useState(false);
 
   const pathname = usePathname();
 
@@ -256,19 +258,14 @@ loadStatusPages();
   }
 
   return (
-    <div className="min-h-screen bg-black text-white flex">
+    <div className="min-h-screen bg-gradient-to-br from-black via-zinc-950 to-green-950 text-white flex">
       {/* Sidebar */}
       <div className="w-72 bg-zinc-950 border-r border-green-950 p-6 flex flex-col">
         <h1 className="text-4xl font-bold mb-8">
           <span className="text-green-500">●</span> PingWatch
         </h1>
 
-        <button
-          onClick={logout}
-          className="mb-8 w-full border border-green-600 bg-green-600 hover:bg-green-600 hover:text-white transition px-4 py-3 rounded-xl text-left font-medium"
-        >
-          Logout
-        </button>
+        
 
         <div className="space-y-2">
           {[
@@ -281,8 +278,8 @@ loadStatusPages();
               href={item.href}
               className={`block px-4 py-3 rounded-xl transition ${
                 pathname === item.href
-                  ? "bg-zinc-900 border-l-4 border-green-500 text-white"
-                  : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
+                  ? "bg-white/5 border border-green-500/30 text-white"
+                  : "text-zinc-400 hover:bg-white/5 backdrop-blur-xl border border-white/10 hover:text-white"
               }`}
             >
               {item.label}
@@ -290,32 +287,80 @@ loadStatusPages();
           ))}
         </div>
 
-        <div className="mt-auto">
-	          <div className="bg-zinc-900 rounded-xl p-4 flex items-center gap-3 border border-zinc-800">
-            <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center font-bold text-white">
-              {userEmail
-                ? userEmail.charAt(0).toUpperCase()
-                : "U"}
-            </div>
+   
+<div className="mt-auto relative">
+  <button
+    onClick={() => setShowProfileMenu(!showProfileMenu)}
+    className="
+      w-full
+      bg-white/5 backdrop-blur-xl border border-white/10
+      rounded-xl
+      p-4
+      flex
+      items-center
+      gap-3
+      border
+      border-zinc-800
+      hover:border-green-500
+      transition
+    "
+  >
+    <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center font-bold text-white">
+      {userEmail
+        ? userEmail.charAt(0).toUpperCase()
+        : "U"}
+    </div>
 
-            <div>
-              <p className="font-semibold text-white">
-                {userEmail
-                  ? userEmail
-                      .split("@")[0]
-                      .replace(/[._-]/g, " ")
-                      .replace(/\b\w/g, (c) =>
-                        c.toUpperCase()
-                      )
-                  : "User"}
-              </p>
+    <div className="text-left">
+      <p className="font-semibold text-white">
+        {userEmail
+          ? userEmail
+              .split("@")[0]
+              .replace(/[._-]/g, " ")
+              .replace(/\b\w/g, (c) =>
+                c.toUpperCase()
+              )
+          : "User"}
+      </p>
 
-              <p className="text-xs text-zinc-500">
-                {userEmail}
-              </p>
-            </div>
-          </div>
-        </div>
+      <p className="text-xs text-zinc-500">
+        {userEmail}
+      </p>
+    </div>
+  </button>
+
+  {showProfileMenu && (
+    <div
+      className="
+        absolute
+        bottom-24
+        left-0
+        w-full
+        bg-white/5 backdrop-blur-xl border border-white/10
+        border
+        border-zinc-800
+        rounded-xl
+        shadow-xl
+        overflow-hidden
+      "
+    >
+      <button
+        onClick={logout}
+        className="
+          w-full
+          text-left
+          px-4
+          py-3
+          hover:bg-zinc-800
+          text-red-400
+        "
+      >
+        Logout
+      </button>
+    </div>
+  )}
+</div>
+            
       </div>
 
       {/* Main */}
@@ -323,7 +368,7 @@ loadStatusPages();
         <div className="mb-8">
           <h2 className="text-5xl font-bold tracking-tight">
             Monitors
-            <span className="bg-green-600">.</span>
+            <span className="text-green-500">.</span>
           </h2>
 
           <p className="text-zinc-500 mt-2">
@@ -336,21 +381,21 @@ loadStatusPages();
 <div className="grid md:grid-cols-5 gap-4 mb-8">
 
   <input
-    className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3"
+    className="bg-white/5 backdrop-blur-xl border border-white/10 border border-zinc-800 rounded-xl px-4 py-3"
     placeholder="Website Name"
     value={name}
     onChange={(e) => setName(e.target.value)}
   />
 
   <input
-    className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3"
+    className="bg-white/5 backdrop-blur-xl border border-white/10 border border-zinc-800 rounded-xl px-4 py-3"
     placeholder="https://example.com"
     value={url}
     onChange={(e) => setUrl(e.target.value)}
   />
 
   <input
-    className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3"
+    className="bg-white/5 backdrop-blur-xl border border-white/10 border border-zinc-800 rounded-xl px-4 py-3"
     placeholder="alerts@example.com"
     value={alertEmail}
     onChange={(e) => setAlertEmail(e.target.value)}
@@ -363,7 +408,7 @@ loadStatusPages();
         e.target.value
       )
     }
-    className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3"
+    className="bg-white/5 backdrop-blur-xl border border-white/10 border border-zinc-800 rounded-xl px-4 py-3"
   >
     <option value="">
       Select Status Page
@@ -382,7 +427,7 @@ loadStatusPages();
   <button
     onClick={addMonitor}
     disabled={adding}
-    className="bg-red-600 hover:bg-red-700 px-3 py-2 rounded-lg text-white px-6 py-3 rounded-xl font-medium disabled:opacity-50"
+    className="bg-green-500 hover:bg-green-400 text-black font-semibold px-6 py-3 rounded-xl disabled:opacity-50"
   >
     {adding ? "Checking..." : "+ New"}
   </button>
@@ -392,13 +437,7 @@ loadStatusPages();
         {/* Monitor Cards */}
         <div className="space-y-4">
           {monitors.length === 0 ? (
-            <div className="bg-white/5
-
-border border-white/10
-
-backdrop-blur-xl
-
-rounded-3xl p-10 text-center">
+            <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-10 text-center">
               <h3 className="text-xl font-semibold mb-2">
                 No Monitors Yet
               </h3>
@@ -411,13 +450,7 @@ rounded-3xl p-10 text-center">
             monitors.map((monitor) => (
               <div
                 key={monitor.id}
-                className="bg-white/5
-
-border border-white/10
-
-backdrop-blur-xl
-
-rounded-3xl p-5 flex justify-between items-center hover:border-green-500/30 transition"
+                className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6 mb-6 flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 hover:border-green-500/50 hover:bg-white/10 transition"
               >
                 <div>
                   <h3 className="text-xl font-semibold">
@@ -472,7 +505,7 @@ rounded-3xl p-5 flex justify-between items-center hover:border-green-500/30 tran
   onClick={() =>
     deleteMonitor(monitor.id)
   }
-  className="bg-red-600 hover:bg-red-700 px-3 py-2 rounded-lg text-white px-3 py-2 rounded-lg text-white"
+  className="bg-red-600 hover:bg-red-700 px-3 py-2 rounded-lg text-white"
 >
   Delete
 </button>
@@ -485,17 +518,7 @@ rounded-3xl p-5 flex justify-between items-center hover:border-green-500/30 tran
 
       {/* Right Panel */}
       <div className="w-80 border-l border-zinc-900 p-6">
-        <div className="bg-white/5
-
-border border-white/10
-
-backdrop-blur-xl
-
-rounded-3xl
-
-p-6
-
-mb-6">
+        <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6 mb-6">
           <h3 className="text-xl font-semibold mb-6">
             Current Status
           </h3>
@@ -524,7 +547,7 @@ mb-6">
           </div>
         </div>
 
-        <div className="bg-zinc-900 rounded-2xl p-6">
+        <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6">
           <h3 className="text-xl font-semibold mb-6">
             Last 24 Hours
           </h3>
