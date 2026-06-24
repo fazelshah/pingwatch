@@ -50,6 +50,7 @@ export default function StatusPagesPage() {
           name,
           slug,
           user_email: user.email,
+          user_id: user.id,
         }),
       }
     );
@@ -72,7 +73,7 @@ export default function StatusPagesPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white p-10">
+    <div className="min-h-screen bg-[#050816] text-white p-10">
       <h1 className="text-5xl font-bold mb-2">
         Status Pages
       </h1>
