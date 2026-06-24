@@ -105,6 +105,7 @@ if (!emailRegex.test(alertEmail)) {
       body: JSON.stringify({
         name,
         url: finalUrl,
+          user_id: user.id,
         email: user.email,
        alert_email: alertEmail,
        status_page_id:
