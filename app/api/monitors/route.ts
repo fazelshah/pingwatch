@@ -1,74 +1,82 @@
-import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+  import { NextResponse } from "next/server";
+  import { supabase } from "@/lib/supabase";
 
-export async function GET() {
-  const { data, error } = await supabase
-    .from("monitors")
-    .select("*")
-    .order("created_at", { ascending: false });
+  export async function GET() {
+    const { data, error } = await supabase
+      .from("monitors")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-  if (error) {
-    return NextResponse.json({
-      error: error.message,
-    });
+    if (error) {
+      return NextResponse.json({
+        error: error.message,
+      });
+    }
+
+    return NextResponse.json(data);
   }
 
-  return NextResponse.json(data);
+  export async function POST(req: Request) {
+    const body = await req.json();
+
+    const {
+      name,
+      url,
+      email,
+      user_id,
+      alert_email,
+      status_page_id,
+    } = body;
+
+    // Free plan limit
+    const {
+      data: existingMonitors,
+      error: countError,
+    } = await supabase
+      .from("monitors")
+      .select("id")
+      .eq("email", email);
+
+    if (countError) {
+      return NextResponse.json({
+        error: countError.message,
+      });
+    }
+
+    if ((existingMonitors?.length || 0) >= 3) {
+      return NextResponse.json({
+        error:
+          "Free plan limit reached. Upgrade to Pro (₹29/month) for up to 50 monitors.",
+      });
+    }
+
+    const { data, error } = await supabase
+      .from("monitors")
+      .insert([
+        {
+          name,
+          url,
+          user_id,
+          email,
+          alert_email,
+          status_page_id,
+          status: "UP",
+          interval_minutes: 1,
+        },
+      ])
+      .select();
+
+    if (error) {
+
+  console.log("Monitor insert error:", error);
+
+  return NextResponse.json({
+
+    error,
+
+  });
+
 }
 
-export async function POST(req: Request) {
-  const body = await req.json();
-
-  const {
-    name,
-    url,
-    email,
-    alert_email,
-    status_page_id,
-  } = body;
-
-  // Free plan limit
-  const {
-    data: existingMonitors,
-    error: countError,
-  } = await supabase
-    .from("monitors")
-    .select("id")
-    .eq("email", email);
-
-  if (countError) {
-    return NextResponse.json({
-      error: countError.message,
-    });
+    return NextResponse.json(data);
   }
-
-  if ((existingMonitors?.length || 0) >= 3) {
-    return NextResponse.json({
-      error:
-        "Free plan limit reached. Upgrade to Pro (₹29/month) for up to 50 monitors.",
-    });
-  }
-
-  const { data, error } = await supabase
-    .from("monitors")
-    .insert([
-      {
-        name,
-        url,
-        email,
-        alert_email,
-        status_page_id,
-        status: "UP",
-        interval_minutes: 1,
-      },
-    ])
-    .select();
-
-  if (error) {
-    return NextResponse.json({
-      error: error.message,
-    });
-  }
-
-  return NextResponse.json(data);
-}
