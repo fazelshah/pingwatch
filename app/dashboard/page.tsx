@@ -117,7 +117,14 @@ if (!emailRegex.test(alertEmail)) {
 
     if (result.error) {
       setAdding(false);
-      alert(result.error);
+        console.log("API Error:", result.error);
+      alert(
+
+    result.error.message ||
+
+    JSON.stringify(result.error, null, 2)
+
+  );  
       return;
     }
 
