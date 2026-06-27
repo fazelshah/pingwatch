@@ -50,21 +50,20 @@
       });
     }
 
-    const { data, error } = await supabase
-      .from("monitors")
-      .insert([
-        {
-          name,
-          url,
-          user_id,
-          email,
-          alert_email,
-          status_page_id,
-          status: "UP",
-          interval_minutes: 1,
-        },
-      ])
-      .select();
+    const { error } = await supabase
+  .from("monitors")
+  .insert([
+    {
+      name,
+      url,
+      user_id,
+      email,
+      alert_email,
+      status_page_id,
+      status: "UP",
+      interval_minutes: 1,
+    },
+  ]);
 
     if (error) {
 
@@ -77,6 +76,7 @@
   });
 
 }
-
-    return NextResponse.json(data);
+return NextResponse.json({
+  success: true,
+});
   }
