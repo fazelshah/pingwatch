@@ -37,22 +37,27 @@ const [selectedStatusPageId, setSelectedStatusPageId] =
     setLoading(false);
   }
 
-  async function loadMonitors() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+ async function loadMonitors() {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-    if (!user) return;
+  if (!user) return;
 
-    const res = await fetch("/api/monitors");
-    const data = await res.json();
+  const res = await fetch("/api/monitors");
+  const data = await res.json();
 
-    const myMonitors = (data || []).filter(
-      (monitor: any) => monitor.email === user.email
-    );
+  console.log("Current user:", user.email);
+  console.log("Monitors API response:", data);
 
-    setMonitors(myMonitors);
-  }
+  const myMonitors = (data || []).filter(
+    (monitor: any) => monitor.user_id === user.id
+  );
+
+  console.log("Filtered monitors:", myMonitors);
+
+  setMonitors(myMonitors);
+}
 
   async function addMonitor() {
     if (!name || !url || !alertEmail) {
